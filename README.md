@@ -46,12 +46,11 @@ Rscript scripts/1_pull_context.R
 
 #### Step 2: Run NDP Clustering
 ```bash
-patient=PD51606
 bash scripts/2_ndp_clustering.sh \
   data/filtered_calls/snv \
   data/metadata/sex_file.txt \
   outputs/ndp_results \
-  $patient \
+  PD51606 \
   15000
 ```
 
