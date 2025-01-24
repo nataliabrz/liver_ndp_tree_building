@@ -55,10 +55,15 @@ bash scripts/2_ndp_clustering.sh \
   15000
 ```
 
-#### Step 3: Generate Trees
+#### Step 3: Generate phylogenetic trees from NDP clustering outputs and SNV files.
 ```bash
-bash scripts/3_generate_trees.sh --input_clusters outputs/ndp_out/clusters.txt \
-  --output_tree outputs/trees/tree.nwk
+bash scripts/3_tree_building.sh \
+  PD51606 \
+  outputs/ndp_results/PD51606 \
+  data/filtered_calls/snv/PD51606_bb_pass_snvs_all.csv \
+  outputs/trees/PD51606 \
+  0.10 \
+  50
 ```
 
 #### Step 4: Assign SNVs and Indels to Clusters
