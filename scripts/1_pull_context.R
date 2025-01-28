@@ -11,7 +11,7 @@ types <- c("snv", "indel")
 
 # Define base paths relative to repository structure
 input_base <- "data/filtered_calls"
-output_base <- "outputs/ndp_input"
+output_base <- "data/filtered_calls"
 
 for (type in types) {
   # Define type-specific input and output directories
