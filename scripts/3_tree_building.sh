@@ -43,7 +43,7 @@ if command -v bsub &> /dev/null; then
       -n 1 -q normal \
       -e "$tree_out_dir/logfiles/$patientID.stderr" \
       -o "$tree_out_dir/logfiles/$patientID.stdout" \
-      "Rscript $SCRIPT_DIR/ndp_tree_generation.R \
+      "Rscript $SCRIPT_DIR/3a_ndp_tree_generation.R \
           $patientID \
           $ndp_input_dir \
           $SCRIPT_DIR \
@@ -53,7 +53,7 @@ if command -v bsub &> /dev/null; then
           $min_mut_count"
 else
   echo "Warning: bsub not found. Running locally..."
-  Rscript "$SCRIPT_DIR/ndp_tree_generation.R" \
+  Rscript "$SCRIPT_DIR/3a_ndp_tree_generation.R" \
       "$patientID" \
       "$ndp_input_dir" \
       "$SCRIPT_DIR" \

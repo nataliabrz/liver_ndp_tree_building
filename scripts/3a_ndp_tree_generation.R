@@ -2,14 +2,14 @@
 
 #############################################
 ## -- Receive command line args --
-args = commandArgs(trailingOnly=TRUE)
+args = commandArgs(trailingOnly = TRUE)
 args
 
 # Check for command line args, else set defaults
-if (length(args)>=3) {
+if (length(args) >= 3) {
   patientID = args[1]
   ndp_input_dir = args[2]
-  script.dir = args[3]
+  script_dir = args[3]
 } else {
   stop("Script needs at least 4 arguments.", call.=FALSE)
 } 
@@ -38,26 +38,25 @@ if (length(args) >= 6) {
 if (length(args) >= 7) {
   min_mut_count = args[7]
 } else { 
-  min_mut_count =50
+  min_mut_count = 50
   message("Using default min mutation threshold of 50")
 }	
 
 ### debugging
 if(FALSE) {
-script.dir="/lustre/scratch126/casm/team154pc/nb15/ISN/code/liver-ndp-tree-building"
-patientID="PD51606"
-ndp_input_dir="/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/2792/NDP/PD51606" # Dir that contains output of ndp clustering
-snv_dir = dirname(dirname(ndp_input_dir))
-file.snv="/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/2792/beta_binomial/snv/ndp_out/PD51606_bb_pass_snvs_all.csv"
-tree_out_dir="/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/2792/ndp_trees" 
-min_vaf_threshold=0.10 #default 0.10
-min_mut_count=50 # default 50
+script_dir = "scripts/"
+patientID = "PD51606"
+ndp_input_dir = "outputs/ndp_results/PD51606" # Dir that contains output of ndp clustering
+snv_dir = "data/filtered_calls/snv/"
+file.snv = "data/filtered_calls/snv/PD51606_bb_pass_snvs_all.csv"
+tree_out_dir = "outputs/trees/PD51606"
+min_vaf_threshold = 0.10 #default 0.10
+min_mut_count = 50 # default 50
 }
 
 # debug 20240617
 print("Script dir-----")
-print(script.dir)
-
+print(script_dir)
 
 
 ### Load required Libraries
@@ -72,13 +71,8 @@ library(gridExtra)
 library(igraph)
 library(ape)
 library(stringr)
-source(paste0(script.dir,"/ndp_tree_functions.R"))
-source(paste0(script.dir,"/phylogeny_functions.R"))
-
-# hardcoded path to remove
-#repo_location <- "/lustre/scratch126/casm/team154pc/nb15/liver/code/snv-clustering-using-the-dirichlet-process/"
-repo_location <- "/lustre/scratch126/casm/team154pc/gj4/liver/code/snv-clustering-using-the-dirichlet-process/"
-
+source(paste0(script_dir, "/utils/ndp_tree_functions.R"))
+source(paste0(script_dir, "/utils/phylogeny_functions.R"))
 
 ### Get clean mut spectrum
 mut.spec.by.clust <- extract.mut.spec(ndp_input_dir)
@@ -88,22 +82,6 @@ x.cluster_and_samples <- cluster.append(snvdir =  dirname(file.snv), ndpdir = nd
 
 ### Filter to remove clusters not present in any sample above min vaf threshold
 x.cluster_and_samples <- x.cluster_and_samples %>% filter(apply(x.cluster_and_samples[, c(1:(ncol(..x.cluster_and_samples)-2))], 1, function(x) any (x >= min_vaf_threshold)))
-
-### nb15 06.09.22 remove artefactual cluster that appears at high vaf in all cuts
-#for(i in 1:length(x.cluster_and_samples$cluster_id)){
-#cluster <- x.cluster_and_samples[which(x.cluster_and_samples$cluster_id == x.cluster_and_samples$cluster_id[i]),]
-#cluster <- cluster[,1:(ncol(cluster)-2)]
-#if(i==1){
-#artefacts <- vector()
-#}
-#if(length(which(cluster > 0.05)) == length(cluster)){
-#artefacts[length(artefacts)+1] <- x.cluster_and_samples$cluster_id[i]
-#}
-#}
-
-## add a line to remove clusters in artefacts from x.cluster_and_samples
-#x.cluster_and_samples <- x.cluster_and_samples %>%
-#  filter(!x.cluster_and_samples$cluster_id %in% artefacts)
 
 save(x.cluster_and_samples, mut.spec.by.clust,file=paste(ndp_input_dir,paste(patientID,'x.clusters.RData',sep='.'),sep='/'))
 
@@ -164,7 +142,6 @@ x.branches <-  infer.tree.branches(clust_pairs = clust_pairs, centiles_tbl_all =
 
 write.csv(x.branches, file = paste(tree_out_dir,paste(patientID, 'initial_branches.csv',sep='.'),sep='/'), row.names = F, quote = F)
 
-#x.branches <- fread("/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/2792/ndp_trees/PD51606.initial_branches.csv")
 
 # decide which branches to keep
 x.branches.keep = keep(x.branches)
@@ -187,7 +164,6 @@ for(i in 1:dim(x.branches.keep)[1]){
 }
 save(x.branches.keep, centiles_tbl_all,file=paste(ndp_input_dir,paste(patientID,'x.branches.pre_tiebreak.RData',sep='.'),sep='/'))
 
-#load("/lustre/scratch126/casm/team154pc/nb15/liver/data/HH_A1AD_rerun/2792/NDP/PD51606/PD51606.x.branches.pre_tiebreak.RData")
 
 ### break ties if multiple potential paths, keeping higher VAF
 x.branches.keep.final <- break.ties(x.branches.keep = x.branches.keep, centiles_tbl_all = centiles_tbl_all)
