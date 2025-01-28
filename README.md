@@ -1,7 +1,6 @@
 # liver_ndp_tree_building
 This repository contains scripts for running n-dimensional dirichlet process (NDP) to cluster mutations based on VAFs from multiple related samples, and building phylogenetic trees based on SNV clustering.
 
-
 ## Workflow
 1. Pull extended sequence context for SNVs and indels.
 2. Perform n-dimensional dirichlet process (NDP) clustering on SNVs.
@@ -23,23 +22,26 @@ cd tree-building-pipeline
 2. Install R dependencies:
 ```R
 install.packages(c(
-    "RColorBrewer", "label.switching", "philentropy", 
-    "ggplot2", "GGally", "dplyr", "data.table", 
-    "here", "farver", "gplots"
+    "data.table", "dplyr", "stringr", "RColorBrewer",
+    "label.switching", "philentropy", "ggplot2", "GGally", 
+    "here", "farver", "tibble", "tidyr", "gridExtra", 
+    "igraph", "ape", "ggrepel"
 ))
 
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
-BiocManager::install(c("BSgenome.Hsapiens.UCSC.hg38", "GenomicRanges", "Biostrings"))
-
+BiocManager::install(c(
+    "BSgenome.Hsapiens.UCSC.hg38", "GenomicRanges", 
+    "Biostrings"
+))
 ```
 
 
 ## Running the Pipeline
 
 ### Example Workflow
-#### Step 1: Extract the 10 bp sequence context around each mutation for SNVs and indels.
+#### Step 1: Extract the 10 bp sequence context around each mutation for SNVs and indels. This file will be saved in the same directory as input calls.
 ```bash
 Rscript scripts/1_pull_context.R
 ```
@@ -65,11 +67,8 @@ bash scripts/3_tree_building.sh \
   50
 ```
 
-#### Step 4: Assign SNVs and Indels to Clusters
+#### Step 4: Assign indels to NDP clusters and output a complete mutation file.
 ```bash
-Rscript scripts/4_assign_clusters_snvs.R --input_snv data/example_snv_data/snv_data.csv \
-  --input_tree outputs/trees/tree.nwk --output assignments_snv.csv
+Rscript scripts/4_allocate_indels_to_ndp_clusters.R
 
-Rscript scripts/5_assign_clusters_indels.R --input_indel data/example_indel_data/indel_data.csv \
-  --input_tree outputs/trees/tree.nwk --output assignments_indel.csv
 ```
