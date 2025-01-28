@@ -2,7 +2,7 @@
 
 # Merge clusters where differences are only related to sequencing errors
 
-merge.clusters.differ.by.seq.error <- function(gs.out, ls.out, min.true.VAF = 0.025, overlap.frac=0.025, min.num.muts = 20, ls.type="ECR", burn.in, version=2) {
+merge.clusters.differ.by.seq.error <- function(gs.out, ls.out, min_true_vaf = 0.025, overlap_frac=0.025, min_num_muts = 20, ls_type="ECR", burn.in, version=2) {
   # Function to merge clusters that are only separated from one another by seq error rates
   # Need for the function is that some clusters are falsely split by the level of seq error
   ## in samples where the mutations are absent (ie, some base positions noisier than others)
@@ -13,14 +13,14 @@ merge.clusters.differ.by.seq.error <- function(gs.out, ls.out, min.true.VAF = 0.
   
   # gs.out is the output from the Gibbs sampler
   # ls.out is the output from the label.switching() function
-  # min.true.VAF is the VAF threshold at which a sample will be counted as carrying the mutations
-  # overlap.frac (VERSION 1) is the minimum fraction of MCMC estimates of pi that overlap in the two clusters for each non-zero sample required for merging - increase its value for less merging; decrease its value for more merging 
-  # overlap.frac (VERSION 2) is the maximum difference between pi.h.j estimates for each non-zero sample
-  # min.num.muts is the minimum number of mutations in the clusters to worry about merging them
+  # min_true_vaf is the VAF threshold at which a sample will be counted as carrying the mutations
+  # overlap_frac (VERSION 1) is the minimum fraction of MCMC estimates of pi that overlap in the two clusters for each non-zero sample required for merging - increase its value for less merging; decrease its value for more merging 
+  # overlap_frac (VERSION 2) is the maximum difference between pi.h.j estimates for each non-zero sample
+  # min_num_muts is the minimum number of mutations in the clusters to worry about merging them
   
   ls.final <- ls.out$clusters[1,]
   unique.clusters <- table(ls.final)
-  kept_clusters = which(unique.clusters >= min.num.muts)
+  kept_clusters = which(unique.clusters >= min_num_muts)
   unique.clusters <- unique.clusters[kept_clusters]
   unique.clusters <- names(unique.clusters)[order(unique.clusters, decreasing = TRUE)]
   
@@ -28,7 +28,7 @@ merge.clusters.differ.by.seq.error <- function(gs.out, ls.out, min.true.VAF = 0.
   N <- gs.out[["N1"]]
   merge.spl <- gs.out[["merge.split"]]
   
-  ls.perm <- ls.out$permutations[ls.type][[1]]
+  ls.perm <- ls.out$permutations[ls_type][[1]]
   pi.h.j <- gs.out[["pi.h.j"]]
   num.clusters <- dim(pi.h.j)[3]
   num.samples <- dim(pi.h.j)[2]
@@ -76,7 +76,7 @@ merge.clusters.differ.by.seq.error <- function(gs.out, ls.out, min.true.VAF = 0.
   }
   
   # Check whether to merge clusters
-  # Merge if in all samples with VAFs above the seq error threshold, MCMC pi overlaps > overlap.frac times 
+  # Merge if in all samples with VAFs above the seq error threshold, MCMC pi overlaps > overlap_frac times 
   for (i in 1:(length(unique.clusters)-1)) {
     ind.i <- as.double(unique.clusters[i])
     # to handle the case of N/A values in mean.vaf columns:
@@ -94,21 +94,21 @@ merge.clusters.differ.by.seq.error <- function(gs.out, ls.out, min.true.VAF = 0.
       #  mean.vaf[idx,ind.i] = 0
       # }
 
-      nonzero.samps <- which(mean.vaf[,ind.i] >= min.true.VAF | mean.vaf[,ind.j] >= min.true.VAF )
+      nonzero.samps <- which(mean.vaf[,ind.i] >= min_true_vaf | mean.vaf[,ind.j] >= min_true_vaf )
       num.overlaps <- sapply(1:dim(pi.mcmc)[3], function(a,k,x,y) {
         temp <- na.exclude(a[,x,k] > a[,y,k]);
         if (length(temp)>0) {sum(temp) / length(temp)} else {0}}, 
         a=pi.mcmc, x=ind.i, y=ind.j)
       if (version == 1 & 
-          all(num.overlaps[nonzero.samps] > overlap.frac & 
-              num.overlaps[nonzero.samps] < 1-overlap.frac)) {
+          all(num.overlaps[nonzero.samps] > overlap_frac & 
+              num.overlaps[nonzero.samps] < 1-overlap_frac)) {
         # Clusters should be merged
         # Merge them into the larger cluster (ind.i)
         ls.final[ls.final == ind.j] <- ind.i
-      } else if (version == 2 & all(abs(mean.vaf[,ind.i] - mean.vaf[,ind.j]) < overlap.frac)) {
+      } else if (version == 2 & all(abs(mean.vaf[,ind.i] - mean.vaf[,ind.j]) < overlap_frac)) {
         print(paste0("cluster 1 is ",ind.i))
         print(paste0("cluster 2 is ",ind.j))
-        print(paste0("clusters not differing by ",overlap.frac," in any sample, merging clusters"))
+        print(paste0("clusters not differing by ",overlap_frac," in any sample, merging clusters"))
         # Clusters should be merged - weight the pi estimates by size of cluster
         ls.final[ls.final == ind.j] <- ind.i
         pi.mcmc[ , ind.i, ] <- (size.clusters[, ind.i] * pi.mcmc[ , ind.i, ] + 
@@ -210,11 +210,11 @@ rev.comp <- function(x) {
 
 # Posterior distribution of cluster locations after resolving label switching
 
-post.param.dist_posthoc <- function(gs.out, ls.merge.out, centiles = c(0.025, 0.5, 0.975), ls.type = "ECR", burn.in = 2000, samp.names, plot.heatmap = TRUE, min.threshold = 100) {
+post.param.dist_posthoc <- function(gs.out, ls.merge.out, centiles = c(0.025, 0.5, 0.975), ls_type = "ECR", burn.in = 2000, samp.names, plot.heatmap = TRUE, min.threshold = 100) {
   # Function to return centiles of posterior distribution for parameters
   # gs.out is output from Gibbs sampler
   # ls.merge.out is output from the merge.clusters.differ.by.seq.error() function
-  # ls.type is the preferred method for label switching correction to be used
+  # ls_type is the preferred method for label switching correction to be used
   # burn.in is the number of iterations of burn-in supplied to the label.switching() function
   # min.threshold is the minimum number of mutations in a cluster for plotting in heatmap
   

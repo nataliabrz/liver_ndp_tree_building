@@ -47,9 +47,9 @@ for (i in seq_along(samples)){
   ### now assign indels to clusters
 
   ls_merge_out <- readRDS(paste0(ndp_out_path, samples[i],
-                                 "/object_lymph.merge.ls.dat"))
+                                 "/object_lymph_merge_ls.dat"))
   post_ls_dist <- readRDS(paste0(ndp_out_path, samples[i],
-                                 "/object_post.cluster.pos.dat"))
+                                 "/object_post_cluster_pos.dat"))
   new_y <- read.table(paste0(indel_path, samples[i], "_ndp_alt_bb_flt.csv"),
                       sep = ",", header = TRUE)
   new_n <- read.table(paste0(indel_path, samples[i], "_ndp_depth_bb_flt.csv"),
