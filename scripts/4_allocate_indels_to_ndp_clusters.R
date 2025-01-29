@@ -1,3 +1,7 @@
+# this script takes cluster assignments from ndp output and merges them with the snv mutation file.
+# then indels are assigned to the existing clusters, and combined with ndp-assigned snvs list to
+# output one final mutation table.
+
 library(data.table)
 library(dplyr)
 
