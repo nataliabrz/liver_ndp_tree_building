@@ -7,11 +7,6 @@ This repository contains scripts for running n-dimensional dirichlet process (ND
 3. Generate phylogenetic trees based on clusters.
 4. Assign indels to NDP clusters.
 
-## Requirements
-- R (>= 4.3.1)
-- Required R libraries: `data.table`, `dplyr`, `BSgenome.Hsapiens.UCSC.hg38`, `GenomicRanges`, `Biostrings`
-- HPC with job scheduler (e.g., LSF)
-
 ### Installation
 1. Clone the repository:
 ```bash
