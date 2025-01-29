@@ -1,3 +1,6 @@
 .history/
 ._*
 .DS_Store
+outputs/
+*.dat
+*.pdf

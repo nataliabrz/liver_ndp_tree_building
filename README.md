@@ -72,3 +72,7 @@ bash scripts/3_tree_building.sh \
 Rscript scripts/4_allocate_indels_to_ndp_clusters.R
 
 ```
+
+## Acknowledgments
+
+This code was originally developed by Peter Campbell, and subsequently edited by Simon Brunner and Stanley Ng.
