@@ -3,39 +3,30 @@
 .DS_Store
 *.dat
 *.pdf
-
-# ------------------------------------------------------------------------------
-# 1. Ignore everything in the outputs/ folder by default
-# ------------------------------------------------------------------------------
+# 1. Ignore everything under outputs/
 outputs/*
 
-# ------------------------------------------------------------------------------
-# 2. Ignore large/binary file types by pattern:
-#    - Large .dat, .RData, .txt (multi-MB or GB) 
-#    - Possibly exclude big PDFs if desired
-# ------------------------------------------------------------------------------
-outputs/**/*.dat
-outputs/**/*.RData
-outputs/**/*.txt
-# outputs/**/*.pdf    # Uncomment if you want to ignore ALL pdfs
+# 2. Unignore the subdirectories you want to partially include
+!outputs/ndp_results/
+!outputs/trees/
 
-# ------------------------------------------------------------------------------
-# 3. UN-IGNORE (include) specific smaller or representative files
-#    You can list files or patterns you actually want in Git.
-# ------------------------------------------------------------------------------
-# Example CSV, TSV, or small PDF outputs to keep
+# 3. Now, within ndp_results, ignore large/binary patterns
+outputs/ndp_results/**/*.dat
+outputs/ndp_results/**/*.RData
+outputs/ndp_results/**/*.txt
+
+# 4. Within trees, ignore large/binary patterns (if needed)
+outputs/trees/**/*.dat
+outputs/trees/**/*.RData
+outputs/trees/**/*.txt
+
+# 5. Finally, unignore (include) the small or important files you want tracked
 !outputs/ndp_results/PD51606/heatmap.tsv
 !outputs/ndp_results/PD51606/muts_per_cluster.csv
-!outputs/ndp_results/PD51606/cluster_and_samples.csv
 !outputs/ndp_results/PD51606/clust_assign.csv
 !outputs/ndp_results/PD51606/clust_assign_posthoc.csv
 !outputs/ndp_results/PD51606/PD51606_ndp_assigned_snvs_and_indels.csv
-# If you have small, informative PDFs you’d like to track:
-!outputs/ndp_results/PD51606/Cluster_and_spectrum_plots.pdf
-!outputs/ndp_results/PD51606/pigeonhole_clusterpairs_PD51606.pdf
 
-# Trees directory: include small PDF or CSV
 !outputs/trees/PD51606/PD51606.cluster_tree_rewrite.pdf
 !outputs/trees/PD51606/PD51606.edge_tbl.csv
 !outputs/trees/PD51606/PD51606.cluster_tree.phylo
-!outputs/trees/PD51606/PD51606.branch_lengths.csv
