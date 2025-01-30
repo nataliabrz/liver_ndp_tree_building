@@ -1,0 +1,27 @@
+"","old_parent","old_child","Evidence","Assign","new_child","new_parent"
+"1","14","34","weak","auto",9,16
+"2","10","27","very weak","auto",18,17
+"3","27","24","very weak","auto",6,18
+"4","10","6","weak","auto",12,17
+"5","26","16","weak","auto",3,19
+"6","8","17","weak","auto",4,20
+"7","4","37","weak","auto",10,21
+"8","1","18","weak","auto",23,22
+"9","18","33","weak","auto",8,23
+"10","1","21","weak","auto",5,22
+"11","31","9","weak","auto",14,24
+"12","3","15","weak","auto",2,25
+"13","2","32","weak","auto",7,26
+"14","36","7","weak","auto",13,27
+"15","PD","14","strong","auto",16,15
+"16","PD","10","strong","auto",17,15
+"17","PD","26","strong","auto",19,15
+"18","PD","8","strong","auto",20,15
+"19","PD","4","strong","auto",21,15
+"20","PD","1","strong","auto",22,15
+"21","PD","31","strong","auto",24,15
+"22","PD","3","strong","auto",25,15
+"23","PD","2","strong","auto",26,15
+"24","PD","36","strong","auto",27,15
+"25","PD","13","strong","auto",1,15
+"26","PD","5","strong","auto",11,15
