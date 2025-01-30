@@ -190,9 +190,8 @@ lymph_merge_ls <- merge.clusters.differ.by.seq.error(lymph_gs,
                                                      overlap_frac <- 0.025,
                                                      min_num_muts <- 20,
                                                      ls_type <- "ECR",
-                                                     number_burn_in,
+                                                     burn.in <- number_burn_in,
                                                      version <- 2)
-
 
 
 #############################################
@@ -223,7 +222,7 @@ par_min_threshold <- 50
 post_cluster_pos <- post.param.dist_posthoc(gs.out = lymph_gs,
                                             ls.merge.out = lymph_merge_ls,
                                             centiles = c(0.025, 0.5, 0.975),
-                                            ls.type = "ECR",
+                                            ls_type = "ECR",
                                             burn.in = number_burn_in,
                                             samp.names = short_names,
                                             plot.heatmap = TRUE,

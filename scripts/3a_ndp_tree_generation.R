@@ -218,7 +218,7 @@ for (i in seq_len(nrow(x_branches_keep))) {
 save(x_branches_keep,
      centiles_tbl_all,
      file = paste(ndp_input_dir,
-                 paste(patient_id, "x.branches.pre_tiebreak.RData", sep = "."),
+                 paste(patient_id, "x_branches_pre_tiebreak.RData", sep = "."),
                  sep = "/"))
 
 ### break ties if multiple potential paths, keeping higher VAF
@@ -267,6 +267,6 @@ par(xpd = TRUE, mar = c(4.1, 2.1, 2.1, 6.1), family = "sans")
 draw_nice_tree(tr, show_internal_nodes = TRUE,
                edge_strength = tr$edge_strength,
                edge_assign = tr$edge_assign,
-               patientID = substr(patient_id, 1, 7))
+               patient_id = substr(patient_id, 1, 7))
 highlight_tree_nodes(tr, pch = 23, bg = "red", show_internal_nodes = TRUE)
 dev.off()

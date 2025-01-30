@@ -73,7 +73,7 @@ convert_edges_to_phylo <- function(tree_tbl, muts_per_cluster) {
     left_join(node_tbl %>% dplyr::select(-node_type), by=c('old_parent'='old_label')) %>%
     dplyr::rename('new_parent'=new_label)
   
-  write.csv(edge_tbl, file = paste(tree_out_dir,paste(patientID, 'edge_tbl.csv',sep='.'),sep='/'))
+  write.csv(edge_tbl, file = paste(tree_out_dir,paste(patient_id, 'edge_tbl.csv',sep='.'),sep='/'))
   
   # 3 --- Generate full table containing all information about nodes, edges and labels  ---
   
@@ -128,7 +128,7 @@ convert_edges_to_phylo <- function(tree_tbl, muts_per_cluster) {
 }
 
 # edit gj4 20240621 - make empty args null by default to avoid is.na() error on vector
-draw_nice_tree <- function(tr, show_internal_nodes=FALSE, edge_strength=NULL, edge_assign=NULL, patientID=id.patient,...) {
+draw_nice_tree <- function(tr, show_internal_nodes=FALSE, edge_strength=NULL, edge_assign=NULL, patient_id=id.patient,...) {
   if(is.null(edge_strength)) {
     plot(tr, ...)#, show.node.label=TRUE)#, direction='downwards')
   } else {
@@ -154,7 +154,7 @@ draw_nice_tree <- function(tr, show_internal_nodes=FALSE, edge_strength=NULL, ed
   }
   axisPhylo(1, root.time=0, backward=FALSE)
   title(xlab = 'Number of mutations', cex=0.5, mgp=c(2.5,0,0),
-        main = patientID)
+        main = patient_id)
   highlight_tree_nodes(tr, pch=23, bg='red', show_internal_nodes=show_internal_nodes)
   
   

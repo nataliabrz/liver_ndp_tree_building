@@ -82,7 +82,7 @@ extract.mut.spec <- function(wd) {
   for(n in 1:length(files)){
     load(files[n])
     wd=outdir=getwd()
-    mut.spec.by.clust <- context.extract_posthoc(mut.spec, lymph.merge.ls)
+    mut.spec.by.clust <- context.extract_posthoc(mut_spec, lymph_merge_ls)
     #save(mut.spec.by.clust,file=paste(gsub('\\/Rsession_ls2.dat','',files[n]),'mut.spec.by.clust.RData',sep='/'))
   }
   return(mut.spec.by.clust)
@@ -126,7 +126,7 @@ extract.mutation.counts <- function(x.cluster_and_samples) {
 extract.95.CI <- function(x.cluster_and_samples, ndpdir) {
   x.clusters.unique.fullrun.centiles = NULL
   colnames(x.cluster_and_samples) = gsub('^PD.*._lo','lo',colnames(x.cluster_and_samples))
-  dirichlet_obj = readRDS(file.path(paste(ndpdir,'object_post.cluster.pos.dat',sep='/')))
+  dirichlet_obj = readRDS(file.path(paste(ndpdir,'object_post_cluster_pos.dat',sep='/')))
   for(j in 1:dim(x.cluster_and_samples)[1]){
     tmp = as.data.frame(dirichlet_obj$centiles[as.numeric(as.character(gsub('Cl.','',x.cluster_and_samples$cluster_id)))[j],,])
     tmp$id = gsub('^PD.*._lo','lo',rownames(tmp))
@@ -328,15 +328,15 @@ infer.tree.branches <- function(clust_pairs, centiles_tbl_all, min_contrib = 0.1
   }
   
   # append indep clusters not captured in clust_pairs
-  idx = grep(paste(unique(x.branches[,'From']),collapse='|'),rownames(x.cluster_and_samples.final),invert=F)
+  idx = grep(paste(unique(x.branches[,'From']),collapse='|'),rownames(x_cluster_and_samples_final),invert=F)
   for(i in 1:length(idx)){
-    x.branches = rbind(x.branches,c('PD',rownames(x.cluster_and_samples.final)[idx[i]],'strong', 'ind2'))
+    x.branches = rbind(x.branches,c('PD',rownames(x_cluster_and_samples_final)[idx[i]],'strong', 'ind2'))
   }
   x.branches = unique(x.branches)
   
-  idx = grep(paste(unique(x.branches[,'From']),collapse='|'),rownames(x.cluster_and_samples.final),invert=T)
+  idx = grep(paste(unique(x.branches[,'From']),collapse='|'),rownames(x_cluster_and_samples_final),invert=T)
   for(i in 1:length(idx)){
-    x.branches = rbind(x.branches,c('PD',rownames(x.cluster_and_samples.final)[idx[i]],'strong', 'ind3'))
+    x.branches = rbind(x.branches,c('PD',rownames(x_cluster_and_samples_final)[idx[i]],'strong', 'ind3'))
   }
   x.branches = unique(x.branches)
   x.branches <- as.data.frame(x.branches)

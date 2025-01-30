@@ -18,19 +18,22 @@ for (i in seq_along(samples)){
   snvs <- read.table(paste0(snv_path, samples[i], "_bb_pass_snvs_all.csv"),
                      sep = ",", header = TRUE)
 
-  clust_assign <- read.table(paste0(ndp_out_path, "clust_assign_posthoc.csv"),
+  snv_y <- read.table(paste0(snv_path, samples[i], "_ndp_alt_bb_flt.csv"),
+                      sep = ",", header = TRUE)
+
+  clust_assign <- read.table(paste0(ndp_out_path, samples[i], "/clust_assign_posthoc.csv"),
                              sep = ",", header = TRUE)
 
   snvs$pos_id <- paste0(snvs$Chrom, "_", snvs$Pos)
   clust_assign$pos_id <- paste0(clust_assign$chrom, "_", clust_assign$pos)
 
-  if (length(unique(snvs$mut_id)) > nrow(clust_assign)) {
-    missing <- setdiff(snvs$pos_id, clust_assign$pos_id)
-    snvs <- snvs[-c(which(snvs$pos_id %in% missing)), ]
-  }
+  #if (length(unique(snvs$mut_id)) > nrow(clust_assign)) {
+  #  missing <- setdiff(snvs$pos_id, clust_assign$pos_id)
+  #  snvs <- snvs[-c(which(snvs$pos_id %in% missing)), ]
+  #}
 
   clust_assign$mut_no <- clust_assign$mut_id
-  clust_assign$mut_id <- unique(snvs$mut_id)
+  clust_assign$mut_id <- unique(snv_y$mut_id)
   clust_assign <- clust_assign[, c("mut_id", "pos_id", "clust_assign")]
   colnames(clust_assign) <- c("mut_id", "pos_id_clust", "cluster_id")
 
@@ -71,14 +74,14 @@ for (i in seq_along(samples)){
 
   context$clust_assign <- new_cluster
   context$mut_id <- rownames(context)
-  cluster_file <- context[, c("clust_assign", "mut_id", "chrom", "pos")]
+  cluster_tbl <- context[, c("clust_assign", "mut_id", "chrom", "pos")]
 
   file_indel <- paste0(indel_path, samples[i], "_bb_pass_indels_all.csv")
 
   ### assign clusters to annotated mutations
   indel_tbl <- fread(file_indel) %>%
     dplyr::mutate(pos_id = paste(Chrom, Pos, sep = "_"))
-  cluster_tbl <- fread(cluster_file) %>%
+  cluster_tbl <- cluster_tbl %>%
     dplyr::mutate(pos_id = paste(chrom, pos, sep = "_")) %>%
     dplyr::select(-mut_id, -chrom, -pos)
   assigned_tbl <- left_join(indel_tbl, cluster_tbl, by = "pos_id") %>%
